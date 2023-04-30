@@ -1,0 +1,25 @@
+{
+  "name": "Existing Docker Compose (Extend)",
+
+  "dockerComposeFile": "../docker-compose.yml",
+
+  "service": "java",
+
+  "workspaceFolder": "/app",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "streetsidesoftware.code-spell-checker",
+        "ms-azuretools.vscode-docker",
+        "vmware.vscode-boot-dev-pack",
+        "vscjava.vscode-java-pack",
+        "MS-CEINTL.vscode-language-pack-ja",
+        "xyz.local-history",
+        "PKief.material-icon-theme",
+        "zhuangtongfa.material-theme",
+        "redhat.fabric8-analytics",
+        "oderwat.indent-rainbow"
+      ]
+    }
+  }
+}
