@@ -3,6 +3,7 @@ package dddpractice.domain.circle;
 import java.util.List;
 
 import dddpractice.domain.share.EventEntity;
+import dddpractice.domain.share.Version;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -17,22 +18,25 @@ public class Circle extends EventEntity {
 	private CircleName name;
 	private Long ownerId;
 	private List<Long> memberIds;
+	private final Version version;
 
 	public static Circle reconstruct(
 			Long id,
 			CircleName name,
 			Long ownerId,
-			List<Long> memberIds) {
+			List<Long> memberIds,
+			Version version) {
 
-		return new Circle(id, name, ownerId, memberIds);
+		return new Circle(id, name, ownerId, memberIds, version);
 	}
 
-	public static Circle create(String name, Long ownerId, List<Long> memberIds) {
-		return new Circle(null, new CircleName(name), ownerId, memberIds);
+	public static Circle create(String name, Long ownerId, List<Long> memberIds, Version version) {
+		return new Circle(null, new CircleName(name), ownerId, memberIds, version);
 	}
 
 	public void changeName(String name) {
 		this.name = new CircleName(name);
+		this.addEvent(new CircleUpdateEvent());
 	}
 
 	public void addMembers(List<Long> memberIds) {

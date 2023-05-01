@@ -8,7 +8,7 @@ services:
     tty: true
     volumes:
       - .:/app
-      - maven:/opt/maven/repository
+      - maven:/root/.m2/repository
       - extensions:/root/.vscode-server/extensions
     ports:
       - 8080:8080

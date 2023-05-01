@@ -12,4 +12,9 @@ public interface UserRepository {
 	public Optional<User> findById(Long id);
 
 	public List<User> findByIds(List<Long> ids);
+
+	public void insert(User user);
+
+	// 楽観ロック
+	public void update(User user);
 }

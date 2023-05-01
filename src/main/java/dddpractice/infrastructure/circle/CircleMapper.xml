@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dddpractice.infrastructure.circle.CircleMapper">
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+    insert into circle (
+      name,
+      owner_id,
+      version
+    ) values (
+      #{name.value},
+      #{ownerId},
+      #{version.value}
+    )
+  </insert>
+
+  <insert id="insertCircleMembers">
+    insert into circle_member (
+      circle_id,
+      user_id
+    ) values
+    <foreach collection="memberIds" item="memberId" open="" close="" separator=",">
+      (
+        #{id},
+        #{memberId}
+      )
+    </foreach>
+  </insert>
+
+  <update id="updateCircle">
+    update
+      circle
+    set
+      name = #{name.value},
+      owner_id = #{ownerId}
+    where
+      id = #{id}
+      and version = #{version.value}
+  </update>
+
+  <update id="updateVersion">
+    update
+      circle
+    set
+      version = version + 1
+    where
+      id = #{id}
+      and version = #{version.value}
+  </update>
+
+  <insert id="addCircleMembers">
+    insert into circle_member (
+      circle_id,
+      user_id
+    ) values
+    <foreach collection="event.memberIds" item="memberId" open="" close="" separator=",">
+      (
+        #{circle.id},
+        #{memberId}
+      )
+    </foreach>
+  </insert>
+
+  <resultMap id="circleMap" type="dddpractice.infrastructure.circle.CircleDto">
+    <id property="id" column="id" />
+    <result property="name" column="name" />
+    <result property="ownerId" column="owner_id" />
+    <result property="version" column="version" />
+    <collection property="memberIds" ofType="java.lang.Long">
+      <result column="member_id" />
+    </collection>
+  </resultMap>
+
+  <select id="findByName" resultMap="circleMap">
+    select
+      circle.id as id,
+      circle.name as name,
+      circle.owner_id as owner_id,
+      circle.version as version,
+      circle_member.user_id as member_id
+    from
+      circle
+    inner join
+      circle_member
+    on
+      circle.id = circle_member.circle_id
+    where
+      circle.name = #{value}
+    order by
+      circle_member.user_id
+  </select>
+</mapper>

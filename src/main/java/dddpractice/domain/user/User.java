@@ -1,6 +1,7 @@
 package dddpractice.domain.user;
 
 import dddpractice.domain.share.Email;
+import dddpractice.domain.share.Version;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -16,22 +17,24 @@ public class User {
 	private Email email;
 	private UserName name;
 	private UserType type;
+	private final Version version;
 
 	public static User reconstruct(
 			Long id,
 			Email email,
 			UserName name,
-			UserType type) {
+			UserType type,
+			Version version) {
 
-		return new User(id, email, name, type);
+		return new User(id, email, name, type, version);
 	}
 
 	public static User create(String email, String name, String typeCode) {
-		return new User(null, new Email(email), new UserName(name), UserType.fromCode(typeCode));
+		return new User(null, new Email(email), new UserName(name), UserType.fromCode(typeCode), Version.init());
 	}
 
-	public void changeName(String name) {
-		this.name = new UserName(name);
+	public void changeEmail(String email) {
+		this.email = new Email(email);
 	}
 
 	public void changeType(String typeCode) {
