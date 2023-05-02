@@ -1,4 +1,4 @@
-version: "3"
+version: '3'
 
 services:
   java:
@@ -8,6 +8,7 @@ services:
     tty: true
     volumes:
       - .:/app
+      - ~/.gitconfig:/root/.gitconfig
       - maven:/root/.m2/repository
       - extensions:/root/.vscode-server/extensions
     ports:

@@ -43,4 +43,9 @@ public class Circle extends EventEntity {
 		this.memberIds.addAll(memberIds);
 		this.addEvent(new CircleAddMembersEvent(memberIds));
 	}
+
+	public Integer memberCount() {
+		// オーナー + メンバーの数
+		return 1 + memberIds.size();
+	}
 }

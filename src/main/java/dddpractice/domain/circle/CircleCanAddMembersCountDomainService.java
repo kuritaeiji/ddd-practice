@@ -8,6 +8,7 @@ import dddpractice.domain.user.User;
 import dddpractice.domain.user.UserRepository;
 import dddpractice.domain.user.UserType;
 import dddpractice.share.exception.Fatal;
+import dddpractice.share.exception.Warning;
 import lombok.RequiredArgsConstructor;
 
 @Component
@@ -21,12 +22,13 @@ public class CircleCanAddMembersCountDomainService {
 	private final UserRepository userRepository;
 
 	/**
-	 * サークルに追加できるメンバー数を返却する
+	 * サークルにメンバーを追加できるかを判定する
 	 * 
 	 * @param circle
+	 * @param addingMemberIds
 	 * @return
 	 */
-	public Integer execute(Circle circle) {
+	public boolean execute(Circle circle, List<Long> addingMemberIds) {
 		User owner = userRepository
 				.findById(circle.getOwnerId())
 				.orElseThrow(() -> new Fatal("ユーザーが見つかりません"));
@@ -43,6 +45,10 @@ public class CircleCanAddMembersCountDomainService {
 				? PREMIUM_CIRCLE_MAX_MEMBER_COUNT
 				: STANDARD_CIRCLE_MAX_MEMBER_COUNT;
 
-		return upperLimit - 1 - members.size();
+		if (circle.memberCount() + addingMemberIds.size() <= upperLimit) {
+			return true;
+		}
+
+		throw new Warning(String.format("サークルに追加可能なメンバーは%d人までです", upperLimit));
 	}
 }
