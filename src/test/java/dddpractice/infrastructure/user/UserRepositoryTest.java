@@ -13,6 +13,7 @@ import dddpractice.factory.user.TestUserDataCreator;
 import dddpractice.factory.user.TestUserFactory;
 import dddpractice.infrastructure.RepositoryTest;
 import dddpractice.share.exception.Warning;
+import dddpractice.usecase.user.UserCreateCommand;
 
 @RepositoryTest
 public class UserRepositoryTest {
@@ -64,7 +65,11 @@ public class UserRepositoryTest {
 		testUserDataCreator.create(null, null, null, null, 2L);
 
 		// when（操作）
-		User updateUser = User.create("aa@aa.com", "name", UserType.STANDARD.getCode());
+		UserCreateCommand command = new UserCreateCommand(
+				"aa@aa.com",
+				"name",
+				UserType.STANDARD.getCode());
+		User updateUser = User.create(command);
 		Throwable throwable = catchThrowable(() -> {
 			userRepository.update(updateUser);
 		});

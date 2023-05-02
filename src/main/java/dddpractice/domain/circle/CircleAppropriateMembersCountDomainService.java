@@ -7,13 +7,13 @@ import org.springframework.stereotype.Component;
 import dddpractice.domain.user.User;
 import dddpractice.domain.user.UserRepository;
 import dddpractice.domain.user.UserType;
+import dddpractice.share.Pair;
 import dddpractice.share.exception.Fatal;
-import dddpractice.share.exception.Warning;
 import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-public class CircleCanAddMembersCountDomainService {
+public class CircleAppropriateMembersCountDomainService {
 
 	private static final Integer PREMIUM_CIRCLE_MAX_MEMBER_COUNT = 50;
 	private static final Integer STANDARD_CIRCLE_MAX_MEMBER_COUNT = 30;
@@ -22,13 +22,13 @@ public class CircleCanAddMembersCountDomainService {
 	private final UserRepository userRepository;
 
 	/**
-	 * サークルにメンバーを追加できるかを判定する
+	 * サークルにメンバーを追加できるかと最大メンバー数を返却する
 	 * 
 	 * @param circle
 	 * @param addingMemberIds
 	 * @return
 	 */
-	public boolean execute(Circle circle, List<Long> addingMemberIds) {
+	public Pair<Boolean, Integer> execute(Circle circle) {
 		User owner = userRepository
 				.findById(circle.getOwnerId())
 				.orElseThrow(() -> new Fatal("ユーザーが見つかりません"));
@@ -45,10 +45,7 @@ public class CircleCanAddMembersCountDomainService {
 				? PREMIUM_CIRCLE_MAX_MEMBER_COUNT
 				: STANDARD_CIRCLE_MAX_MEMBER_COUNT;
 
-		if (circle.memberCount() + addingMemberIds.size() <= upperLimit) {
-			return true;
-		}
-
-		throw new Warning(String.format("サークルに追加可能なメンバーは%d人までです", upperLimit));
+		Boolean isAppropriateMembersCount = circle.memberCount() <= upperLimit;
+		return new Pair<Boolean, Integer>(isAppropriateMembersCount, upperLimit);
 	}
 }

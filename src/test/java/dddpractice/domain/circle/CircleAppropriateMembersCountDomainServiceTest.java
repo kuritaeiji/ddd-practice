@@ -19,15 +19,15 @@ import dddpractice.domain.user.UserRepository;
 import dddpractice.domain.user.UserType;
 import dddpractice.factory.circle.TestCircleFactory;
 import dddpractice.factory.user.TestUserFactory;
-import dddpractice.share.exception.Warning;
+import dddpractice.share.Pair;
 
-public class CircleCanAddMembersCountDomainServiceTest {
+public class CircleAppropriateMembersCountDomainServiceTest {
 
 	@Mock
 	UserRepository userRepository;
 
 	@InjectMocks
-	CircleCanAddMembersCountDomainService circleCanAddMembersCountDomainService;
+	CircleAppropriateMembersCountDomainService circleAppropriateMembersCountDomainService;
 
 	@BeforeEach
 	void setup() {
@@ -54,12 +54,14 @@ public class CircleCanAddMembersCountDomainServiceTest {
 		doReturn(members).when(userRepository).findByIds(circle.getMemberIds());
 		doReturn(Optional.of(owner)).when(userRepository).findById(circle.getOwnerId());
 		List<Long> addingMembers = List.of(1L);
+		circle.addMembers(memberIds);
 
 		// when（操作）
-		boolean result = circleCanAddMembersCountDomainService.execute(circle, addingMembers);
+		Pair<Boolean, Integer> result = circleAppropriateMembersCountDomainService.execute(circle);
 
 		// then（期待する結果）
-		assertThat(result).isTrue();
+		assertThat(result.getLeft()).isTrue();
+		assertThat(result.getRight()).isEqualTo(30);
 	}
 
 	@Test
@@ -82,13 +84,13 @@ public class CircleCanAddMembersCountDomainServiceTest {
 		doReturn(members).when(userRepository).findByIds(circle.getMemberIds());
 		doReturn(Optional.of(owner)).when(userRepository).findById(circle.getOwnerId());
 		List<Long> addingMembers = List.of(1L, 2L);
+		circle.addMembers(memberIds);
 
 		// when（操作）
-		Throwable throwable = catchThrowable(() -> {
-			circleCanAddMembersCountDomainService.execute(circle, addingMembers);
-		});
+		Pair<Boolean, Integer> result = circleAppropriateMembersCountDomainService.execute(circle);
 
 		// then（期待する結果）
-		assertThat(throwable).isInstanceOf(Warning.class);
+		assertThat(result.getLeft()).isFalse();
+		assertThat(result.getRight()).isEqualTo(30);
 	}
 }

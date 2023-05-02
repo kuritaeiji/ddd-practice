@@ -34,6 +34,6 @@ public class TestUserFactory {
 			version = 1L;
 		}
 
-		return User.reconstruct(id, new Email(name), new UserName(name), userType, new Version(version));
+		return User.reconstruct(id, new Email(email), new UserName(name), userType, new Version(version));
 	}
 }
